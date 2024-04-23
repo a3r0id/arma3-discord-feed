@@ -36,23 +36,27 @@ void CALL_CONVENTION RVExtension(char* output, unsigned int outputSize, const ch
 	
 	// Capture function in a local string to ensure its lifetime
 	std::string fnc(function);
+	
 	// Start a new thread to handle the function
 	std::thread([fnc]() {
+
 		std::string functionName = "";
 		std::string data = "";
 		json dataParsed;
-		// if delimiter is found, split the string
+	
+		// If delimiter is found, split the string
 		if (fnc.find(DELIMITER) != std::string::npos)
 		{
 			functionName = fnc.substr(0, fnc.find(DELIMITER));
-			// if any data is found after the delimiter, assign it to the data variable
+			
+			// If any data is found after the delimiter, assign it to the data variable
 			if (fnc.find(DELIMITER) != fnc.length() - 1)
 			{
 				data = fnc.substr(fnc.find(DELIMITER) + 1);
 				try {
 					Logging::logDebug(("Data: " + data).c_str());
 					dataParsed = json::parse(data);
-					// ensure data is a JSON object
+					// Ensure data is a JSON object
 					if (!dataParsed.is_object()) {
 						std::string out = "RVExtension Error: Data must be a JSON object!";
 						Logging::logError(out.c_str());
@@ -73,7 +77,7 @@ void CALL_CONVENTION RVExtension(char* output, unsigned int outputSize, const ch
 			functionName = fnc;
 		}
 
-		// bootstrap environment if not already bootstrapped - assume that bootstrap was called then return if bootstrap is the function
+		// Bootstrap environment if not already bootstrapped - assume that bootstrap was called then return if bootstrap is the function
 		bool bBootstrapped = Functions::isBootstrapped();
 		if (!bBootstrapped) {
 			Functions::bootstrap(bBootstrapped);
@@ -95,12 +99,11 @@ void CALL_CONVENTION RVExtension(char* output, unsigned int outputSize, const ch
 			callbackPtr(EXTENSION_NAME, functionName.c_str(), out.c_str());
 			return;
 		}
+
 		std::string returnValue = "";
-		if (functionName == "simpleFeedEmbed") {
-			returnValue = Functions::simpleFeedEmbed(dataParsed, "public_channel", config);
-		} else {
-			returnValue = "RVExtension Error: Function not found!";
-		}
+		returnValue = (functionName == "simpleFeedEmbed") ? Functions::simpleFeedEmbed(dataParsed, "public_channel", config) : "RVExtension Error: Function not found!";
+		
 		callbackPtr(EXTENSION_NAME, functionName.c_str(), returnValue.c_str());
+
 	}).detach();
 }

@@ -70,7 +70,7 @@ std::string Functions::bootstrap(bool bBootstrapped)
 std::string Functions::simpleFeedEmbed(json args, const char* type, json config)
 {
 
-	// ensure that the args is an object
+	// ensure that args is an object
 	if (!args.is_object()) {
 		return "[ [\"success\", false], [\"error\", \"Invalid JSON object\"] ]";
 	}

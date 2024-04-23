@@ -6,9 +6,11 @@ if (GROM_ADKF_SERVER_FEED_RUNNING) exitWith {
     };
 };
 
-GROM_ADKF_FEED_EH_IDS = createHashMap; // killed, chat, connect, disconnect, kick, building
+// event handler ids
+GROM_ADKF_FEED_EH_IDS = createHashMap; 
+
+// feed running flag
 GROM_ADKF_SERVER_FEED_RUNNING = true;
-GROM_ADKF_FEED_NAME = "Server";
 
 // deaths & blue on blue kills
 GROM_ADKF_FEED_EH_IDS set ["killed", addMissionEventHandler ["EntityKilled", {
@@ -42,10 +44,11 @@ GROM_ADKF_FEED_EH_IDS set ["killed", addMissionEventHandler ["EntityKilled", {
 }]];
 
 // chat messages
+// TODO: Use respective channel type as embed title: ie: "Side Chat"
+// https://community.bistudio.com/wiki/Description.ext#disableChannels:~:text=Channel%20ID%20number%20command%20correspondence
 GROM_ADKF_FEED_EH_IDS set ["chat", addMissionEventHandler ["HandleChatMessage", {
 	params ["_channel", "_owner", "_from", "_text", "_person", "_name", "_strID", "_forcedDisplay", "_isPlayerMessage", "_sentenceType", "_chatMessageType", "_params"];
-    systemChat str _this;
-    if (count(_from) > 0) then {
+    if (count(_from) > 0 && count(_text) > 0) then {
         private _message = format ["%1: %2", _from, _text];
         ["Chat", _message] call grom_adkf_api_fnc_simpleFeedEmbed;
     };

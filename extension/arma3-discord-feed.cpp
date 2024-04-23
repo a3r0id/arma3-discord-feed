@@ -6,7 +6,6 @@
 #include <functional>
 #include <sstream>
 #include <thread>
-#include <chrono>
 #include "headers/RVExtensionUtil.h"
 #include "classes/Logging.h"
 #include "classes/Functions.h"
@@ -48,7 +47,7 @@ void CALL_CONVENTION RVExtension(char* output, unsigned int outputSize, const ch
 		if (fnc.find(DELIMITER) != std::string::npos)
 		{
 			functionName = fnc.substr(0, fnc.find(DELIMITER));
-			
+
 			// If any data is found after the delimiter, assign it to the data variable
 			if (fnc.find(DELIMITER) != fnc.length() - 1)
 			{

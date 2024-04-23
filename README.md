@@ -25,7 +25,7 @@ cmake --build . --config Release
 ```
 
 NOTE: You'll need to make a couple of quick changes to [`CMakeLists.txt`](https://github.com/a3r0id/arma3-discord-feed/blob/main/extension/CMakeLists.txt) in order to automatically install required dependencies to your local Arma 3
-directory as well as build the mod. The only thing you will need to do manually after this is builing the PBO, which can be done with [Addon Builder](https://community.bistudio.com/wiki/Addon_Builder) or [Mikero Tools](https://community.bistudio.com/wiki/Mikero_Tools). I plan to add some sort of automation for this process in the future.
+directory as well as build the mod. The only thing you will need to do manually after this is building the PBO, which can be done with [Addon Builder](https://community.bistudio.com/wiki/Addon_Builder) or [Mikero Tools](https://community.bistudio.com/wiki/Mikero_Tools). I plan to add some sort of automation for this process in the future.
 
 Requirements:
 - CMake (>= 3.8)

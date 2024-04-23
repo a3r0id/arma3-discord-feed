@@ -3,10 +3,8 @@ import os
 import time
 
 # Proper function_argument with expected data
-# simpleFeedEmbed|{\"title\": \"Invoker Test\", \"description\": \"HUGE FUCKING DUB!\"}
-# FUNCTION_ARGUMENT = "simpleFeedEmbed|{\"title\": \"test\", \"description\": \"test123\"}".encode('utf-8')
-FUNCTION_ARGUMENT = "startBot".encode('utf-8')
-DLL_DIR = r"D:\Storage\2024 Projects\A3API2\extension\A3API2\out\install\x64-debug\bin"
+FUNCTION_ARGUMENT = "simpleFeedEmbed|{\"title\": \"Invoker Test\", \"description\": \"Hello Discord!\"}".encode('utf-8')
+DLL_DIR = r"<DLL DIRECTORY>"
 DLL_FILE = "arma3-discord-feed_x64.dll"
 
 # Load the DLL
@@ -44,6 +42,7 @@ output = ctypes.create_string_buffer(buffer_size)
 print("[+INVOKE+] Calling RVExtension with argument:", FUNCTION_ARGUMENT)
 dll.RVExtension(output, ctypes.c_uint(buffer_size), ctypes.c_char_p(FUNCTION_ARGUMENT))
 
+# Print the output - jenky way to do this but it works lol
 try:
     while True:
         time.sleep(1)

@@ -1,10 +1,6 @@
 ﻿// A3API2.cpp
 #include <iostream>
-#include <fstream>
-#include <string>
 #include <cstring>
-#include <functional>
-#include <sstream>
 #include <thread>
 #include "headers/RVExtensionUtil.h"
 #include "classes/Logging.h"

@@ -15,10 +15,11 @@ To install the required dependencies, move all of the files in `Dependencies/<yo
 
 ## Build Extension From Source
 The extension is entirely cross-platform (64-bit only) and thoroughly tested on Windows 10 (22H2) as well as Ubuntu 22.04.1 LTS.
+All dependencies are fetched & built via the CMake workflow, requiring little-to-no setup upon building.
 
 ### CMake
 <details>
-  <summary>Expand</summary>
+  <summary>See More</summary>
   Simply open the `extension` directory in your favorite IDE with CMake support and build from there OR run the following against the directory via CLI:
   
   ```bash

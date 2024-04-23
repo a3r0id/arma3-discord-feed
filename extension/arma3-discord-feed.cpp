@@ -99,6 +99,6 @@ void CALL_CONVENTION RVExtension(char* output, unsigned int outputSize, const ch
 		returnValue = (functionName == "simpleFeedEmbed") ? Functions::simpleFeedEmbed(dataParsed, "public_channel", config) : "RVExtension Error: Function not found!";
 		
 		callbackPtr(EXTENSION_NAME, functionName.c_str(), returnValue.c_str());
-
+		
 	}).detach();
 }

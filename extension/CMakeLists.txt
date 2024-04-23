@@ -1,12 +1,10 @@
 ﻿####### EDIT HERE #######
-# define arma 3 server directory
-
-# Linux
+# Define your local Arma 3 server directory - If desired, you can define both Linux and Windows directories for cross-platform development.
 set(ARMA3_SERVER_DIR_LINUX "/home/steam/arma3")
-
-# Windows
 set(ARMA3_SERVER_DIR_WINDOWS "X:/Storage/Steam/steamapps/common/Arma 3")
-
+# Python executable
+set(PYTHON_WINDOWS "python")
+set(PYTHON_LINUX "python3")
 ####### END EDIT #######
 
 
@@ -60,9 +58,16 @@ foreach (_variableName ${_variableNames})
 	message(STATUS "[VARS] ${_variableName}=${${_variableName}}")
 endforeach()
 
-# if on linux, we need to make sure we're not naming the lib like libarma3-discord-feed_x64.so
+# Set the python executable based on the OS
+if (WIN32)
+  set(PYTHON ${PYTHON_WINDOWS})
+else()
+  set(PYTHON ${PYTHON_LINUX})
+endif()
+
+# if on linux, we need to make sure we're not following the default naming convention bc Arma lol
 if (UNIX)
   set_target_properties(arma3-discord-feed PROPERTIES OUTPUT_NAME "arma3-discord-feed_x64.so")    
 endif()
 
-add_custom_command(TARGET arma3-discord-feed POST_BUILD COMMAND python ${CMAKE_SOURCE_DIR}/scripts/build.py ${ARMA3_SERVER_DIR_LINUX} ${ARMA3_SERVER_DIR_WINDOWS} ${arma3-discord-feed_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_custom_command(TARGET arma3-discord-feed POST_BUILD COMMAND ${PYTHON} ${CMAKE_SOURCE_DIR}/scripts/build.py ${ARMA3_SERVER_DIR_LINUX} ${ARMA3_SERVER_DIR_WINDOWS} ${arma3-discord-feed_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

@@ -1,5 +1,7 @@
 # Arma 3 Discord Feed
 
+![](https://github.com/a3r0id/arma3-discord-feed/blob/main/logo.png?raw=true)
+
 ## Installation
 To install the required dependencies, move all of the files in `Dependencies/<your operating system>` to the root of your Arma 3 server folder.
 

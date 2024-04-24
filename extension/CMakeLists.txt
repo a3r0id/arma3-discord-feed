@@ -20,9 +20,6 @@ project(arma3-discord-feed)
 # Add source to this project's library.
 add_library(arma3-discord-feed MODULE "arma3-discord-feed.cpp" "headers/RVExtensionUtil.h"  "classes/Functions.cpp"  "classes/Functions.h"  "classes/Logging.cpp"  "classes/Logging.h")
 
-# set(CMAKE_CXX_STANDARD 17)
-# set(DEFAULT_BUILD_TYPE "Release")
-
 if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
 	message(FATAL_ERROR "Only 64-bit builds are supported")
 endif()

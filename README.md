@@ -39,9 +39,11 @@ Requirements:
 
 ### Functions
 > *grom_adkf_api_fnc_simpleFeedEmbed*
+
 `["I am a title", "I am a message"] call grom_adkf_api_fnc_simpleFeedEmbed;`
 
 ### Flags
 > *GROM_ADKF_FEED_DISABLED*
+
 > Disables the feed. Useful for builing your own feed on top of A3DKF.
 

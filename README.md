@@ -35,3 +35,8 @@ Requirements:
 - CMake (>= 3.8)
 - A Python3 installation - the post-build script will attempt move the extension and it's dependencies into the `mod` directory upon completing a successful build.
 
+## API
+
+### *grom_adkf_api_fnc_simpleFeedEmbed*
+> `["I am a title", "I am a message"] call grom_adkf_api_fnc_simpleFeedEmbed;`
+

@@ -65,9 +65,9 @@ else()
   set(PYTHON ${PYTHON_LINUX})
 endif()
 
-# if on linux, we need to make sure we're not following the default naming convention bc Arma lol
+# if on linux, remove the prefix
 if (UNIX)
-  set_target_properties(arma3-discord-feed PROPERTIES OUTPUT_NAME "arma3-discord-feed_x64.so")    
+	set_target_properties(arma3-discord-feed PROPERTIES PREFIX "")
 endif()
 
 add_custom_command(TARGET arma3-discord-feed POST_BUILD COMMAND ${PYTHON} ${CMAKE_SOURCE_DIR}/scripts/build.py ${ARMA3_SERVER_DIR_LINUX} ${ARMA3_SERVER_DIR_WINDOWS} ${arma3-discord-feed_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

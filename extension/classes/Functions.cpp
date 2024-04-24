@@ -10,6 +10,7 @@ using json = nlohmann::json;
 
 const char* logFiles[] = { "debug", "error" };
 const char* requiredFieldsBasicEmbed[] = {"title", "description"};
+const char* requiredFieldsConfig[] = {"name", "avatar", "webhook_url", "embed_color"};
 
 json Functions::getConfig()
 {
@@ -52,7 +53,8 @@ std::string Functions::bootstrap(bool bBootstrapped)
 		json config = {
 			{"name", "Discord Feed"},
 			{"avatar", "<changeme>"},
-			{"webhook_url", "<changeme>"}			
+			{"webhook_url", "<changeme>"},
+			{"embed_color", 0}	// https://gist.github.com/thomasbnt/b6f455e2c7d743b796917fa3c205f812
 		};
 		configFile << config.dump(4);
 		configFile.close();
@@ -84,6 +86,15 @@ std::string Functions::simpleFeedEmbed(json args, const char* type, json config)
 		return "[ [\"success\", false], [\"error\", \"Invalid configuration: config is not object\"] ]";
 	}
 
+	// validate the required fields in the config
+	for (const char* field : requiredFieldsConfig)
+	{
+		if (!config.contains(field) || config[field].is_null())
+		{
+			return "[ [\"success\", false], [\"error\", \"Missing configuration field: " + std::string(field) + "\"] ]";
+		}
+	}
+
 	// Log the config and args
 	Logging::logDebug(("[Functions::simpleFeedEmbed::Config] " + config.dump()).c_str());
 	Logging::logDebug(("[Functions::simpleFeedEmbed::Args] " + args.dump()).c_str());
@@ -111,14 +122,14 @@ std::string Functions::simpleFeedEmbed(json args, const char* type, json config)
 	json embed;
 	embed["title"] = args["title"];
 	embed["description"] = args["description"];
-	embed["color"] = 16711680; // Red
+	embed["color"] = config["embed_color"];
 	std::vector embeds = { embed };
 	payload["embeds"] = embeds;
 	std::string payloadString = payload.dump();
 	Logging::logDebug(("[Functions::simpleFeedEmbed::Payload] " + payloadString).c_str());
-	std::string webhookURL = config["webhook_url"];
+	std::string webhookUrl = config["webhook_url"];
 	cpr::Response r = cpr::Post(
-		cpr::Url(webhookURL),
+		cpr::Url(webhookUrl),
 		cpr::Body(payloadString),
 		cpr::Header{ {"Content-Type", "application/json"} }
 	);

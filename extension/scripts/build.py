@@ -51,7 +51,7 @@ else:
     DEPS = [
         ("_deps/zlib-build", "libz.so"),
         ("_deps/cpr-build/cpr", "libcpr.so"),
-        ("_deps/curl-build/lib", "libcurl.so"),
+        ("_deps/curl-build/lib", "libcurl-d.so"),
         (f"{MOD_NAME}_x64.so"),
     ]
 
@@ -61,7 +61,8 @@ else:
 for dep in DEPS:
     dep_path = os.path.join(BIN_PATH, *dep) if len(dep) == 2 else os.path.join(BIN_PATH, dep)
     if not os.path.exists(dep_path):
-        raise Exception(f"Dependency not found: {dep_path}")
+        print(f"[build.py|Critical Warning] Dependency not found: {dep_path}")
+        continue
     if len(dep) == 2:
         shutil.copy(dep_path, A3_PATH)
         print (f"[Build.py] Copied {dep_path} to {A3_PATH}")

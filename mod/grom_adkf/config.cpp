@@ -46,4 +46,13 @@ class CfgFunctions
 			class stopServerFeed  {}; // grom_adkf_modules_fnc_stopServerFeed
         };
     };	
+    class grom_adkf_spatial
+    {
+        class Functions
+        {
+			tag 	= "grom_adkf_spatial";
+			file 	= "grom_adkf\functions\spatial";
+			class nearestLocationName {}; // grom_adkf_spatial_fnc_nearestLocationName
+        };
+    };		
 };

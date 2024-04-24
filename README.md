@@ -48,14 +48,14 @@ Disables the feed. Useful for builing your own feed on top of A3DKF.
 
 ## TODO
 
-> Get all EH's working lol
-> Add feature-flags to config to allow users to decide what EH's they want in their feed
-> Add custom messages with magic variables to config
+- Get all EH's working lol
+- Add feature-flags to config to allow users to decide what EH's they want in their feed
+- Add custom messages with magic variables to config
 
 ## Future Plans
 
-> Custom, user-friendly EH API
-> Admin-only log as well, apart from the default public feed
-> More complex embeds with fields
-> Send player list to webhook when a player joins/leaves
+- Custom, user-friendly EH API
+- Admin-only log as well, apart from the default public feed
+- More complex embeds with fields
+- Send player list to webhook when a player joins/leaves
 

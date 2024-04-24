@@ -6,7 +6,6 @@
 #include "Logging.h"
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
-
 using json = nlohmann::json;
 
 const char* logFiles[] = { "debug", "error" };
@@ -50,7 +49,12 @@ std::string Functions::bootstrap(bool bBootstrapped)
 	if (!std::filesystem::exists("arma3-discord-feed/config.json"))
 	{
 		std::ofstream configFile("arma3-discord-feed/config.json");
-		configFile << "{\"private_channel\": {\"bot_token\": \"<your bot's token>\", \"name\": \"Admin Log\", \"avatar\": \"<changeme>\", \"webhook_url\": \"<changeme>\"}, \"public_channel\": {\"name\": \"Public Log\", \"avatar\": \"<changeme>\", \"webhook_url\": \"<changeme>\"}}";
+		json config = {
+			{"name", "Discord Feed"},
+			{"avatar", "<changeme>"},
+			{"webhook_url", "<changeme>"}			
+		};
+		configFile << config.dump(4);
 		configFile.close();
 	}
 	// iterate over log files and create if they don't exist
@@ -75,26 +79,17 @@ std::string Functions::simpleFeedEmbed(json args, const char* type, json config)
 		return "[ [\"success\", false], [\"error\", \"Invalid JSON object\"] ]";
 	}
 
-	// ensure that the config contains the required fields
-	if (!config.contains(type)) {
-		// Log error or handle the situation
-		return "[ [\"success\", false], [\"error\", \"Missing configuration: channel type\"] ]";
+	// if config is not an object, log error or handle the situation
+	if (!config.is_object()) {
+		return "[ [\"success\", false], [\"error\", \"Invalid configuration: config is not object\"] ]";
 	}
 
-	// type can be either "private_channel" or "public_channel"
-	json channel = config[type];
-
-	// if channel is not an object, log error or handle the situation
-	if (!channel.is_object()) {
-		return "[ [\"success\", false], [\"error\", \"Invalid configuration: channel is not object\"] ]";
-	}
-
-	// Log the channel and args
-	Logging::logDebug(("[Functions::simpleFeedEmbed::Config] " + channel.dump()).c_str());
+	// Log the config and args
+	Logging::logDebug(("[Functions::simpleFeedEmbed::Config] " + config.dump()).c_str());
 	Logging::logDebug(("[Functions::simpleFeedEmbed::Args] " + args.dump()).c_str());
 
-	// ensure that the channel contains the required fields
-	if (!channel.contains("webhook_url") || !channel.contains("name") || !channel.contains("avatar")) {
+	// ensure that the config contains the required fields
+	if (!config.contains("webhook_url") || !config.contains("name") || !config.contains("avatar")) {
 		return "[ [\"success\", false], [\"error\", \"Missing configuration\"] ]";
 	}
 
@@ -109,8 +104,8 @@ std::string Functions::simpleFeedEmbed(json args, const char* type, json config)
 
 	// create payload object
 	json payload;
-	payload["username"] = channel["name"];
-	payload["avatar_url"] = channel["avatar"];
+	payload["username"] = config["name"];
+	payload["avatar_url"] = config["avatar"];
 
 	// create embed object
 	json embed;
@@ -121,7 +116,7 @@ std::string Functions::simpleFeedEmbed(json args, const char* type, json config)
 	payload["embeds"] = embeds;
 	std::string payloadString = payload.dump();
 	Logging::logDebug(("[Functions::simpleFeedEmbed::Payload] " + payloadString).c_str());
-	std::string webhookURL = channel["webhook_url"];
+	std::string webhookURL = config["webhook_url"];
 	cpr::Response r = cpr::Post(
 		cpr::Url(webhookURL),
 		cpr::Body(payloadString),

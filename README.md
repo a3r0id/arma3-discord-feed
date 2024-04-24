@@ -14,11 +14,10 @@
 - If you encounter any issues, please refer to the documentation or reach out to me on Discord: https://isrc.wtf/discord
 - Enjoy!
 
-## Build Extension From Source
+## Build Extension From Source With CMake
 The extension is entirely cross-platform (64-bit only) and thoroughly tested on Windows 10 (22H2) as well as Ubuntu 22.04.1 LTS.
 All dependencies are fetched & built via the CMake workflow, requiring little-to-no setup upon building.
 
-### CMake
 Simply open the `extension` directory in your favorite IDE with CMake support and build from there OR run the following against the directory via CLI:
 
 ```bash

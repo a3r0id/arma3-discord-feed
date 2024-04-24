@@ -3,7 +3,7 @@
 ![](https://github.com/a3r0id/arma3-discord-feed/blob/main/logo.png?raw=true)
 
 ## Installation
-[Windows] To install the required dependencies, move all of the files in `Dependencies/Windows_x64` to the root of your Arma 3 server folder.
+[Windows] To install the required dependencies, move all of the files in `Dependencies/windows-x64` to the root of your Arma 3 server folder.
 
 ## Setup
 - Run your Arma 3 server at least once to generate the necessary files then immediately shutdown the server. This is a crucial step to ensure that the extension is bootstrapped correctly.

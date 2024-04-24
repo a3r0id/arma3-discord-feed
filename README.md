@@ -45,5 +45,5 @@ Requirements:
 ### Flags
 > *GROM_ADKF_FEED_DISABLED*
 
-> Disables the feed. Useful for builing your own feed on top of A3DKF.
+Disables the feed. Useful for builing your own feed on top of A3DKF.
 

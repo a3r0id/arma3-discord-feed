@@ -32,7 +32,6 @@ class CfgFunctions
 		{
 			tag 	= "grom_adkf_data";
 			file 	= "grom_adkf\functions\data";
-			class stringReplace {}; // grom_adkf_data_fnc_stringReplace
 			class sanitize 		{}; // grom_adkf_data_fnc_sanitize
 		};
 	};

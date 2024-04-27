@@ -7,13 +7,19 @@ set(PYTHON_WINDOWS "python")
 set(PYTHON_LINUX "python3")
 ####### END EDIT #######
 
-
-
 cmake_minimum_required(VERSION 3.8)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
+
+# -Wno-dev is used to suppress the warning about the FetchContent_Declare() command
+# -g is used to generate debug information
+# -O0 is used to disable optimization
+# -O3 is used to enable optimization
+# -Wall is used to enable all warnings
+# set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wno-dev")
+# set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -Wno-dev")
 
 project(arma3-discord-feed)
 
@@ -48,12 +54,19 @@ FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download
 FetchContent_MakeAvailable(json)
 target_link_libraries(arma3-discord-feed PRIVATE nlohmann_json::nlohmann_json)
 
-# dump all the variables for debugging
-get_cmake_property(_variableNames VARIABLES)
-list (SORT _variableNames)
-foreach (_variableName ${_variableNames})
-	message(STATUS "[VARS] ${_variableName}=${${_variableName}}")
-endforeach()
+# SQLite
+# fetch the sqlite3.c and sqlite3.h files
+# FetchContent_Declare(sqlite3 URL https://www.sqlite.org/2024/sqlite-amalgamation-3450300.zip)
+# FetchContent_MakeAvailable(sqlite3)
+# target_include_directories(arma3-discord-feed PRIVATE ${sqlite3_SOURCE_DIR})
+#target_link_libraries(arma3-discord-feed PRIVATE sqlite3)
+
+# # dump all the variables for debugging
+# get_cmake_property(_variableNames VARIABLES)
+# list (SORT _variableNames)
+# foreach (_variableName ${_variableNames})
+# 	message(STATUS "[VARS] ${_variableName}=${${_variableName}}")
+# endforeach()
 
 # Set the python executable based on the OS
 if (WIN32)

@@ -6,6 +6,10 @@ if (GROM_ADKF_SERVER_FEED_RUNNING) exitWith {
     };
 };
 
+// gives the ability to disable the feed - must be set in init/preinit - haven't tested this yet
+if (isNil "GROM_ADKF_FEED_DISABLED") then {GROM_ADKF_FEED_DISABLED = false};
+if (GROM_ADKF_FEED_DISABLED) exitWith {};
+
 // event handler ids
 GROM_ADKF_FEED_EH_IDS = createHashMap; 
 

@@ -67,7 +67,7 @@ GROM_ADKF_FEED_EH_IDS set ["connect", addMissionEventHandler ["PlayerConnected",
 //     ["User Disconnected", _message] call grom_adkf_api_fnc_simpleFeedEmbed;
 // }]];
 
-// [?] player kicks
+// [?] player kicks - untested
 GROM_ADKF_FEED_EH_IDS set ["kick", addMissionEventHandler ["OnUserKicked", {
     // Reasons: 0 : "TIMEOUT", 1 : "DISCONNECTED", 2 : "KICKED", 3 : "BANNED", 4 : "MISSING ADDON", 5 : "BAD CD KEY", 6 : "CD KEY IN USE", 7 : "SESSION LOCKED", 8 : "BATTLEYE", 9 : "STEAM CHECK", 10 : "DLC CONTENT", 11 : "GS TIMEOUT", 12 : "SCRIPT", 13 : "OTHER"
     params ["_networkId", "_kickTypeNumber", "_kickType", "_kickReason", "_kickMessageIncReason"];
@@ -75,7 +75,7 @@ GROM_ADKF_FEED_EH_IDS set ["kick", addMissionEventHandler ["OnUserKicked", {
     ["User Kicked", _message] call grom_adkf_api_fnc_simpleFeedEmbed;
 }]];
 
-// [+] building destroyed
+// [+] building destroyed - disabled - probably not useful unless we want to track building destruction - civ reputation etc
 GROM_ADKF_FEED_EH_IDS set ["building", addMissionEventHandler ["BuildingChanged", {
 	params ["_from", "_to", "_isRuin"];
     systemChat format ["BuildingChanged: %1, %2, %3", _from, _to, _isRuin];

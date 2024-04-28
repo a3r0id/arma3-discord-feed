@@ -2,3 +2,5 @@ extension/out
 extension/.vs
 mod/out
 config.json
+extension/scripts/invoker_debug.py
+extension/scripts/invoker_debug.py

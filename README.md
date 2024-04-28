@@ -44,7 +44,7 @@ Example usage: `["I am a title", "I am a message"] call grom_adkf_api_fnc_simple
 ### Flags
 > *GROM_ADKF_FEED_DISABLED*
 
-Disables the feed. Useful for builing your own feed on top of A3DKF.
+Disables the feed. Useful for building your own feed on top of A3DF.
 
 ## TODO
 

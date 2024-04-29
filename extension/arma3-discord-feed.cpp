@@ -38,6 +38,8 @@ void CALL_CONVENTION RVExtension(char* output, unsigned int outputSize, const ch
 		std::string functionName = "";
 		std::string data = "";
 		json dataParsed;
+
+		callbackPtr(EXTENSION_NAME, "<TEST>", fnc.c_str());
 	
 		// If delimiter is found, split the string
 		if (fnc.find(DELIMITER) != std::string::npos)
@@ -72,32 +74,39 @@ void CALL_CONVENTION RVExtension(char* output, unsigned int outputSize, const ch
 			functionName = fnc;
 		}
 
-		// Bootstrap environment if not already bootstrapped - assume that bootstrap was called then return if bootstrap is the function
-		bool bBootstrapped = Functions::isBootstrapped();
-		if (!bBootstrapped) {
-			Functions::bootstrap(bBootstrapped);
-			callbackPtr(EXTENSION_NAME, "bootstrap", "Environment Bootstrapped!");
-		}
-
-		if (functionName == "bootstrap") {
-			return;
-		}
-
-		json config;
-		try { 
-			config = Functions::getConfig(); 
-			Logging::logDebug(("Config: " + config.dump()).c_str());
-		} 
-		catch (json::parse_error& e) {
-			std::string out = "RVExtension Error: " + std::string(e.what());
-			Logging::logError(("Failed to load config: " + out).c_str());
-			callbackPtr(EXTENSION_NAME, functionName.c_str(), out.c_str());
-			return;
-		}
-
 		std::string returnValue = "";
-		returnValue = (functionName == "simpleFeedEmbed") ? Functions::simpleFeedEmbed(dataParsed, "public_channel", config) : "RVExtension Error: Function not found!";
-		
+		json config;
+		try {
+			Functions::Function funcEnum = Functions::getFunctionEnum(functionName);
+			switch (funcEnum) {
+				case Functions::Function::bootstrap:
+					// Bootstrap doesn't return a value
+					callbackPtr(EXTENSION_NAME, functionName.c_str(), "In bootstrap function");
+					Functions::bootstrap();
+					break;
+				case Functions::Function::getconfig:
+					// Get config and convert to string (parsable array)
+					// check if config is empty
+					config = Functions::getConfig();
+					if (config.empty() || config.is_null()) {
+						returnValue = "[]";
+						break;
+					}
+					returnValue = Functions::armaParsableConfig(config);
+					callbackPtr(EXTENSION_NAME, functionName.c_str(), "In getconfig function");
+					break;
+				case Functions::Function::simpleFeedEmbed:
+					returnValue = Functions::simpleFeedEmbed(dataParsed, "public_channel");
+					callbackPtr(EXTENSION_NAME, functionName.c_str(), "In simpleFeedEmbed function");
+					break;
+				default:
+					returnValue = "RVExtension Error: Function not found!";
+					break;
+			}
+		} catch (const std::invalid_argument& e) {
+			returnValue = e.what();
+		}
+
 		callbackPtr(EXTENSION_NAME, functionName.c_str(), returnValue.c_str());
 		
 	}).detach();

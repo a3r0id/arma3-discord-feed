@@ -15,13 +15,22 @@ class CfgPatches
 
 class CfgFunctions
 {
+
+	class grom_adkf
+	{
+		class Functions
+		{
+			tag 	= "grom_adkf";
+			file 	= "grom_adkf\functions";
+			class init {postInit = 1;}; // (postInit)
+		};
+	};
 	class grom_adkf_api
 	{
 		class Functions
 		{
 			tag 	= "grom_adkf_api";
 			file 	= "grom_adkf\functions\api";
-            class bootstrap    				{postInit = 1;}; // (postInit)
 			class handleExtensionCallback 	{}; // grom_adkf_api_fnc_handleExtensionCallback
 			class simpleFeedEmbed 			{}; // grom_adkf_api_fnc_simpleFeedEmbed	
 		};
@@ -35,14 +44,15 @@ class CfgFunctions
 			class sanitize 		{}; // grom_adkf_data_fnc_sanitize
 		};
 	};
-    class grom_adkf_modules
+    class grom_adkf_modules_feed
     {
         class Functions
         {
-			tag 	= "grom_adkf_modules";
-			file 	= "grom_adkf\functions\modules";
-			class startServerFeed {}; // grom_adkf_modules_fnc_startServerFeed
-			class stopServerFeed  {}; // grom_adkf_modules_fnc_stopServerFeed
+			tag 	= "grom_adkf_modules_feed";
+			file 	= "grom_adkf\functions\modules\feed";
+			class initFeed		  {}; // grom_adkf_modules_feed_fnc_initFeed - automatically called from getconfig callback
+			class startServerFeed {}; // grom_adkf_modules_feed_fnc_startServerFeed
+			class stopServerFeed  {}; // grom_adkf_modules_feed_fnc_stopServerFeed
         };
     };	
     class grom_adkf_spatial

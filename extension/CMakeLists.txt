@@ -80,4 +80,11 @@ if (UNIX)
 	set_target_properties(arma3-discord-feed PROPERTIES PREFIX "")
 endif()
 
+# Copy the runtime dependencies to the build directory
+# if (WIN32)
+#   add_custom_command(TARGET arma3-discord-feed POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/runtime_dependencies/windows/*.dll $<TARGET_FILE_DIR:arma3-discord-feed>)
+# else()
+#   add_custom_command(TARGET arma3-discord-feed POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_SOURCE_DIR}/runtime_dependencies/linux/*.so $<TARGET_FILE_DIR:arma3-discord-feed>)
+# endif()
+
 add_custom_command(TARGET arma3-discord-feed POST_BUILD COMMAND ${PYTHON} ${CMAKE_SOURCE_DIR}/scripts/build.py ${ARMA3_SERVER_DIR_LINUX} ${ARMA3_SERVER_DIR_WINDOWS} ${arma3-discord-feed_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

@@ -49,10 +49,7 @@ if os.name == "nt":
 else:
     A3_PATH = LINUX_A3_PATH
     DEPS = [
-        ("_deps/zlib-build", "libz.so"),
-        ("_deps/cpr-build/cpr", "libcpr.so"),
-        ("_deps/curl-build/lib", "libcurl-d.so"),
-        (f"{MOD_NAME}_x64.so"),
+        (f"{MOD_NAME}_x64.so")
     ]
 
 # all dependencies should be copied to mod/out/Dependencies besides the main extension

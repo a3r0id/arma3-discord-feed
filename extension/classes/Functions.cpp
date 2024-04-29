@@ -1,12 +1,9 @@
-#include <string>
-#include <filesystem>
-#include <array>
-#include <string>
 #include "Functions.h"
-#include "Logging.h"
+#include <fstream>
+#include <filesystem>
 #include <cpr/cpr.h>
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include <iostream>
+#include "Logging.h"
 
 const char* logFiles[] = { "debug", "error" };
 const char* requiredFieldsBasicEmbed[] = {"title", "description"};
@@ -31,34 +28,47 @@ bool Functions::isBootstrapped()
 	return std::filesystem::exists("arma3-discord-feed");
 }
 
-std::string Functions::bootstrap(bool bBootstrapped)
+void Functions::bootstrap()
 {
 	std::string status = "Bootstrap: ";
-	// check if directory exists and create if it doesn't
-	if (!bBootstrapped)
+
+	// check if directory exists
+	if (std::filesystem::exists("arma3-discord-feed"))
 	{
-		std::filesystem::create_directory("arma3-discord-feed");
-		status += "Environment created!";
-	}
-	else
-	{
-		status += "Environment already exists!";
+		status += "Directory already exists\r\n";
 		Logging::logDebug(status.c_str());
-		return status;
+		return;
+	} else {
+		std::filesystem::create_directory("arma3-discord-feed");
 	}
-	// check if config file exists and create if it doesn't
-	if (!std::filesystem::exists("arma3-discord-feed/config.json"))
+
+	// check if config file exists
+	if (std::filesystem::exists("arma3-discord-feed/config.json"))
 	{
+		status += "Config file already exists\r\n";
+		Logging::logDebug(status.c_str());
+		return;
+	} else {
+		// create config file if it doesn't exist
 		std::ofstream configFile("arma3-discord-feed/config.json");
 		json config = {
 			{"name", "Discord Feed"},
 			{"avatar", "<changeme>"},
 			{"webhook_url", "<changeme>"},
-			{"embed_color", 0}	// https://gist.github.com/thomasbnt/b6f455e2c7d743b796917fa3c205f812
+			{"embed_color", 0},	// https://gist.github.com/thomasbnt/b6f455e2c7d743b796917fa3c205f812
+			{"auto_start_feed", true}
 		};
+		json featureFlags = {
+			{"EntityKilled", true},
+			{"HandleChatMessage", true},
+			{"PlayerConnected", true},
+			{"OnUserKicked", false} // experimental and VERY MUCH untested
+		};
+		config["feature_flags"] = featureFlags;
 		configFile << config.dump(4);
 		configFile.close();
 	}
+
 	// iterate over log files and create if they don't exist
 	for (const char* logFile : logFiles)
 	{
@@ -67,14 +77,68 @@ std::string Functions::bootstrap(bool bBootstrapped)
 		{
 			std::ofstream logFileStream(filePath); // Open the file using the file path
 			logFileStream.close(); // Immediately close the file
+			status += "Created log file: " + std::string(logFile) + ".log\r\n";
 		}
 	}
+
+	status += "Environment created!";
 	Logging::logDebug(status.c_str());
-	return status;
 }
 
-std::string Functions::simpleFeedEmbed(json args, const char* type, json config)
+std::string Functions::armaParsableConfig(json config)
 {
+    if (config.is_null() || config.empty()) {
+        return "[]";
+    }
+
+    // Using vector of pairs to store string and boolean values
+    std::vector<std::pair<std::string, bool>> featureFlags;
+
+    // Check if "auto_start_feed" is present and a boolean before adding it
+    if (config.contains("auto_start_feed") && config["auto_start_feed"].is_boolean()) {
+        featureFlags.push_back({"auto_start_feed", config["auto_start_feed"].get<bool>()});
+    }
+
+    // Safely access "feature_flags" and iterate over them if it's an object
+    if (config.contains("feature_flags") && config["feature_flags"].is_object()) {
+        for (auto& it : config["feature_flags"].items()) {
+            // Ensure each item is a boolean before adding
+            if (it.value().is_boolean()) {
+                featureFlags.push_back({it.key(), it.value().get<bool>()});
+            }
+        }
+    }
+
+    // Building the output string
+    std::string out = "[";
+    for (auto& featureFlag : featureFlags) {
+        out += "[\"" + featureFlag.first + "\", " + (featureFlag.second ? "true" : "false") + "], ";
+    }
+
+    // Remove the last comma and space if the vector is not empty
+    if (!featureFlags.empty()) {
+        out.pop_back(); // Remove the last space
+        out.pop_back(); // Remove the last comma
+    }
+    out += "]";
+
+    return out;
+}
+
+std::string Functions::simpleFeedEmbed(json args, const char* type)
+{
+
+	json config;
+	try { 
+		config = Functions::getConfig(); 
+		Logging::logDebug(("Config: " + config.dump()).c_str());
+	} 
+	catch (json::parse_error& e) {
+		std::string out = "RVExtension Error: " + std::string(e.what());
+		Logging::logError(("Failed to load config: " + out).c_str());
+		return "[ [\"success\", false], [\"error\", \"" + out + "\"] ]";
+	}
+
 
 	// ensure that args is an object
 	if (!args.is_object()) {
@@ -141,3 +205,17 @@ std::string Functions::simpleFeedEmbed(json args, const char* type, json config)
 	}
 	return "[ [\"success\", true], [\"status_code\", " + std::to_string(r.status_code) + "], [\"message\", \"" + r.text + "\"] ]";
 };
+
+std::map<std::string, Functions::Function> Functions::functionMap = {
+    {"bootstrap", Functions::Function::bootstrap},
+    {"getconfig", Functions::Function::getconfig},
+    {"simpleFeedEmbed", Functions::Function::simpleFeedEmbed}
+};
+
+Functions::Function Functions::getFunctionEnum(const std::string& functionName) {
+    auto it = functionMap.find(functionName);
+    if (it != functionMap.end()) {
+        return it->second;
+    }
+    throw std::invalid_argument("Unknown function name");
+}

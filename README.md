@@ -1,4 +1,4 @@
-# Arma 3 Discord Feed (Alpha - Abandoned)
+# Arma 3 Discord Feed (Abandoned)
 
 ![](https://github.com/a3r0id/arma3-discord-feed/blob/main/logo.png?raw=true)
 
